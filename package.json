@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "npm-run-all": "^4.0.2",
     "react-scripts": "0.9.5"
   },
   "dependencies": {
@@ -18,6 +19,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "rename": "mv build/index.html build/200.html",
+    "surge": "surge ./build --domain react-redux-todos.surge.sh",
+    "deploy": "run-s build rename surge"
   }
 }

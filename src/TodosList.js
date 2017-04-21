@@ -8,16 +8,20 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import formatDate from './lib/formatDate';
-import { toggleTodo } from './actions';
+import { toggleTodo, deleteTodo } from './actions';
 
 class TodosList extends Component {
   handleToggle = e => {
-    this.props.toggleTodo(parseInt(e.target.id, 10));
+    e.persist();
+    setTimeout(() => {
+      this.props.toggleTodo(parseInt(e.target.id, 10));
+    }, 0);
   };
 
   handleDelete = e => {
     e.preventDefault();
-    console.log(e.target.id);
+    const id = e.target.id || e.target.parentElement.id;
+    this.props.deleteTodo(parseInt(id, 10));
   };
 
   render() {
@@ -58,7 +62,7 @@ const mapStateToProps = ({ todos }) => ({
 });
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ toggleTodo }, dispatch);
+  return bindActionCreators({ toggleTodo, deleteTodo }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodosList);

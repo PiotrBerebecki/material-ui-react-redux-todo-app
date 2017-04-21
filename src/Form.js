@@ -8,10 +8,18 @@ import { connect } from 'react-redux';
 import formatDate from './lib/formatDate';
 import { addTodo } from './actions';
 
+const styles = {
+  underlineStyle: {
+    borderColor: '#eea6a0',
+  },
+};
+
 class Form extends Component {
   state = {
     text: '',
     date: {},
+    wasEmptyTextSubmitted: false,
+    wasEmptyDateSubmitted: false,
   };
 
   handleTextChange = e => {
@@ -29,12 +37,33 @@ class Form extends Component {
   handleSubmit = e => {
     e.preventDefault();
     if (this.state.text && this.state.date instanceof Date) {
-      console.log('submitting');
-      this.props.addTodo(this.state);
+      this.props.addTodo({ text: this.state.text, date: this.state.date });
       this.setState({
         text: '',
         date: {},
       });
+    }
+
+    if (!this.state.text) {
+      this.setState({
+        wasEmptyTextSubmitted: true,
+      });
+      setTimeout(() => {
+        this.setState({
+          wasEmptyTextSubmitted: false,
+        });
+      }, 2000);
+    }
+
+    if (!(this.state.date instanceof Date)) {
+      this.setState({
+        wasEmptyDateSubmitted: true,
+      });
+      setTimeout(() => {
+        this.setState({
+          wasEmptyDateSubmitted: false,
+        });
+      }, 2000);
     }
   };
 
@@ -48,6 +77,9 @@ class Form extends Component {
           hintText="To do"
           fullWidth={true}
           autoComplete="off"
+          underlineStyle={
+            this.state.wasEmptyTextSubmitted ? styles.underlineStyle : null
+          }
         />
         <DatePicker
           onChange={this.handleDateChange}
@@ -56,6 +88,9 @@ class Form extends Component {
           hintText="Due date"
           fullWidth={true}
           formatDate={formatDate}
+          underlineStyle={
+            this.state.wasEmptyDateSubmitted ? styles.underlineStyle : null
+          }
         />
         <RaisedButton type="submit" label="Add todo" fullWidth={true} />
       </form>
