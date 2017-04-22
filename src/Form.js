@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 
 import formatDate from './lib/formatDate';
 import { addTodo } from './actions';
+import { highlightInputError2000 } from './lib/highlightInputError';
 
 const styles = {
   underlineStyle: {
@@ -18,8 +19,8 @@ class Form extends Component {
   state = {
     text: '',
     date: {},
-    wasEmptyTextSubmitted: false,
-    wasEmptyDateSubmitted: false,
+    emptyTextSubmitted: false,
+    emptyDateSubmitted: false,
   };
 
   handleTextChange = e => {
@@ -45,25 +46,11 @@ class Form extends Component {
     }
 
     if (!this.state.text) {
-      this.setState({
-        wasEmptyTextSubmitted: true,
-      });
-      setTimeout(() => {
-        this.setState({
-          wasEmptyTextSubmitted: false,
-        });
-      }, 2000);
+      highlightInputError2000(this, 'emptyTextSubmitted');
     }
 
     if (!(this.state.date instanceof Date)) {
-      this.setState({
-        wasEmptyDateSubmitted: true,
-      });
-      setTimeout(() => {
-        this.setState({
-          wasEmptyDateSubmitted: false,
-        });
-      }, 2000);
+      highlightInputError2000(this, 'emptyDateSubmitted');
     }
   };
 
@@ -78,7 +65,7 @@ class Form extends Component {
           fullWidth={true}
           autoComplete="off"
           underlineStyle={
-            this.state.wasEmptyTextSubmitted ? styles.underlineStyle : null
+            this.state.emptyTextSubmitted ? styles.underlineStyle : null
           }
         />
         <DatePicker
@@ -89,7 +76,7 @@ class Form extends Component {
           fullWidth={true}
           formatDate={formatDate}
           underlineStyle={
-            this.state.wasEmptyDateSubmitted ? styles.underlineStyle : null
+            this.state.emptyDateSubmitted ? styles.underlineStyle : null
           }
         />
         <RaisedButton type="submit" label="Add todo" fullWidth={true} />
